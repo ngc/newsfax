@@ -59,19 +59,19 @@
 }
 
 .newsfax-popover.true {
-  background-color: rgba(34, 197, 94, 0.15);
+  background-color: rgba(129, 237, 169, 0.15);
   color: #059669;
   border-color: rgba(34, 197, 94, 0.3);
 }
 
 .newsfax-popover.false {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: rgba(228, 160, 160, 0.15);
   color: #dc2626;
   border-color: rgba(239, 68, 68, 0.3);
 }
 
 .newsfax-popover.somewhat-true {
-  background-color: rgba(250, 204, 21, 0.15);
+  background-color: rgba(244, 220, 127, 0.15);
   color: #d97706;
   border-color: rgba(250, 204, 21, 0.3);
 }

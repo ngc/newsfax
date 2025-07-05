@@ -67,12 +67,6 @@ const fetchFactCheckingData = async (): Promise<CheckedFact[]> => {
               reject(error);
             }
           }, 1000);
-
-          // Timeout after 30 seconds
-          setTimeout(() => {
-            clearInterval(pollInterval);
-            reject(new Error("Fact checking timeout"));
-          }, 30000);
         });
       } else {
         throw new Error(`API error: ${response.status}`);

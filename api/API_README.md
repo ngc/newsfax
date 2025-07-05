@@ -5,9 +5,12 @@ A FastAPI-based fact-checking service that processes web URLs and returns fact-c
 ## Features
 
 - **Async Processing**: Fact-checking runs in background to handle long-running operations
+- **Real AI Fact-Checking**: Uses OpenAI GPT models + Tavily search for authentic fact verification
+- **Intelligent Fallback**: Works in mock mode when API keys aren't available
 - **SQLite Database**: Persistent storage for fact-check results and processing status
 - **Polling-Based**: Clients poll the endpoint until processing is complete
-- **Comprehensive Testing**: Full test suite with TDD approach
+- **Modular Architecture**: Clean separation between API, fact-checking logic, and database
+- **Comprehensive Testing**: Full test suite with TDD approach + integration tests
 
 ## API Endpoint
 
@@ -116,7 +119,21 @@ interface Source {
    uv sync --dev
    ```
 
-2. **Run the server:**
+2. **Configure API keys (for real fact checking):**
+   ```bash
+   # Copy the template and add your API keys
+   cp env.template .env
+   
+   # Edit .env file to add your API keys:
+   # OPENAI_API_KEY=your_openai_api_key_here
+   # TAVILY_API_KEY=your_tavily_api_key_here
+   ```
+   
+   **Note:** The API will work in mock mode without API keys, but for real fact-checking you need:
+   - OpenAI API key from https://platform.openai.com/api-keys
+   - Tavily API key from https://tavily.com/
+
+3. **Run the server:**
    ```bash
    python hello.py
    ```
@@ -126,10 +143,19 @@ interface Source {
    ```
    or
    ```bash
-   uvicorn hello:app --reload
+   uvicorn api:app --reload
    ```
 
-3. **Access API:**
+4. **Test the setup:**
+   ```bash
+   # Run integration tests
+   python test_integration.py
+   
+   # Run full test suite
+   python run.py test
+   ```
+
+5. **Access API:**
    - Server: http://localhost:8000
    - Interactive docs: http://localhost:8000/docs
    - OpenAPI spec: http://localhost:8000/openapi.json
@@ -205,6 +231,45 @@ facts = response.json()
 print(f"Found {len(facts)} facts")
 ```
 
+## Architecture
+
+### Component Overview
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│    hello.py     │    │     api.py      │    │ fact_checker.py │
+│   Entry Point   │───▶│   FastAPI App   │───▶│  AI Logic      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                              │                          │
+                              ▼                          ▼
+                       ┌─────────────────┐    ┌─────────────────┐
+                       │   Database      │    │  External APIs  │
+                       │   (SQLite)      │    │ OpenAI + Tavily │
+                       └─────────────────┘    └─────────────────┘
+```
+
+### File Structure
+
+- **`hello.py`** - Entry point that starts the FastAPI server
+- **`api.py`** - Main FastAPI application with endpoints and database logic
+- **`fact_checker.py`** - AI-powered fact checking using LangChain + Tavily
+- **`test_factcheck.py`** - Comprehensive test suite
+- **`test_integration.py`** - Integration tests for end-to-end functionality
+
+### How It Works
+
+1. **Content Extraction**: Uses Tavily API to extract clean text content from URLs
+2. **Fact Extraction**: LangChain agent identifies factual statements in the content
+3. **Fact Verification**: For each fact, searches for supporting/contradicting evidence
+4. **Result Compilation**: Aggregates sources and determines truthfulness levels
+5. **Database Storage**: Caches results to avoid re-processing the same URLs
+
+### Async Design
+
+- All external API calls run in thread pools to avoid blocking the FastAPI event loop
+- Background tasks handle long-running fact-checking processes
+- Clients poll the API until processing completes
+
 ## Development
 
 ### TDD Approach
@@ -212,13 +277,19 @@ This API was built using Test-Driven Development:
 
 1. **Tests First**: Comprehensive test suite written before implementation
 2. **Red-Green-Refactor**: Tests fail → Implementation → Tests pass → Refactor
-3. **Mock External Dependencies**: Tavily API calls are mocked in tests
+3. **Mock External Dependencies**: AI and Tavily API calls are mocked in tests
 4. **Isolated Testing**: Each test uses temporary database
 
+### Real vs Mock Mode
+
+- **Real Mode**: With API keys configured, uses actual OpenAI + Tavily APIs
+- **Mock Mode**: Without API keys, returns predefined fact-checking results
+- **Graceful Fallback**: Automatically switches to mock mode if APIs fail
+
 ### Future Enhancements
-- Real Tavily API integration
 - Rate limiting and authentication
 - Caching layer (Redis)
 - Webhook notifications for completion
 - Batch processing of multiple URLs
-- Content extraction optimization 
+- Content extraction optimization
+- Advanced fact verification algorithms 
