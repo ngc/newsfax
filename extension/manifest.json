@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "Newsfax",
+    "version": "1.0.0",
+    "action": {},
+    "permissions": [
+        "storage",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "http://localhost:5173/*"
+    ],
+    "background": {
+        "service_worker": "src/background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["src/content.tsx"]
+        }
+    ]
+}
