@@ -25,6 +25,7 @@ if not openai_api_key or not tavily_api_key:
 model = init_chat_model("openai:gpt-3.5-turbo")
 memory = MemorySaver()
 
+
 # Create factual quotes extraction tool
 @tool
 def extract_factual_quotes(content: str) -> str:
