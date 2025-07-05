@@ -8,6 +8,7 @@
 .env.test
 .env.production
 
+/api/myenv
 
 __pycache__/
 *.pyc
