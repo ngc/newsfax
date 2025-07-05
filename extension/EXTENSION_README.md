@@ -1,23 +1,39 @@
 # Newsfax - Fact Checking Chrome Extension MVP
 
-This is the MVP (Minimum Viable Product) for the Newsfax fact-checking Chrome extension. The extension highlights text in web pages based on the truthfulness of statements and provides interactive popovers with fact-checking information.
+This is the MVP (Minimum Viable Product) for the Newsfax fact-checking Chrome extension. The extension highlights text in web pages based on the truthfulness of statements and provides interactive popovers with detailed fact-checking information including AI summaries and credible sources.
+
+## 🚀 How to Use
+
+1. **Load the extension** in Chrome (see installation instructions below)
+2. **Navigate to any webpage** with news articles or text content
+3. **Click the Newsfax extension icon** in your browser toolbar
+4. **Wait for analysis** - a loading indicator will appear while the backend processes the page
+5. **See highlighted facts** - text will be highlighted in different colors based on truthfulness
+6. **Click highlighted text** - view detailed fact-checking information with sources
 
 ## Features
 
-- **Text Highlighting**: Automatically highlights specific text phrases on web pages based on fact-checking data
+- **On-Demand Analysis**: Fact-checking only starts when you click the extension icon
+- **Backend Simulation**: Simulates real API calls with loading states and delays
+- **Text Highlighting**: Highlights specific text phrases based on fact-checking data
 - **Color-coded Truthfulness**: 
   - 🟢 **Green**: TRUE statements
   - 🟡 **Yellow**: SOMEWHAT TRUE statements  
   - 🔴 **Red**: FALSE statements
-- **Interactive Popovers**: Click on highlighted text to see a popover with truthfulness information
-- **Non-intrusive**: The extension doesn't interfere with the normal browsing experience
+- **Detailed Popovers**: Click highlighted text for AI summaries and credible sources
+- **Interactive Source Icons**: macOS dock-like hover effects for source navigation
+- **Loading Feedback**: Visual indicators during backend processing
+- **Glassmorphism UI**: Modern, beautiful interface with blur effects
 
 ## How It Works
 
-1. **Content Script Injection**: The extension injects a React-based content script into every web page
-2. **Text Analysis**: The script scans the page for text that matches predefined fact-checking data
-3. **Highlighting**: Matching text is wrapped in styled spans with appropriate colors
-4. **Popover Display**: When users click highlighted text, a popover appears with fact-checking information
+1. **Extension Icon Click**: User clicks the Newsfax icon in the browser toolbar
+2. **Background Communication**: Background script sends message to content script
+3. **Backend Simulation**: Content script makes simulated API call with 1.5s delay
+4. **Loading Indicator**: User sees loading spinner while "backend" processes the page
+5. **Text Analysis**: Script scans page for text matching fact-checking data
+6. **Highlighting**: Matching text is wrapped in color-coded spans
+7. **Interactive Popovers**: Click highlighted text for detailed information and sources
 
 ## Current Implementation
 
@@ -60,12 +76,18 @@ pnpm run dev
 
 ### 3. Test with Demo Page
 1. Open the `test.html` file in your browser
-2. You should see highlighted text in green, yellow, and red
-3. Click on any highlighted text to see the popover
-4. Test clicking outside the popover to close it
+2. **Click the Newsfax extension icon** in your browser toolbar
+3. Wait for the loading indicator (1.5 seconds)
+4. You should see highlighted text in green, yellow, and red
+5. Click on any highlighted text to see the detailed popover
+6. Hover over source icons to see the macOS dock effect
+7. Click source icons to open URLs in new tabs
 
 ### 4. Test on Real Websites
-Visit any news website and look for the highlighted terms. The extension will automatically highlight any matching text from the dummy data.
+1. Visit any news website (BBC, CNN, etc.)
+2. **Click the Newsfax extension icon** to start analysis
+3. Wait for the backend simulation to complete
+4. Look for highlighted terms from the fact-checking database
 
 ## File Structure
 
