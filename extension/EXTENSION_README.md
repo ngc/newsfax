@@ -22,15 +22,15 @@ This is the MVP (Minimum Viable Product) for the Newsfax fact-checking Chrome ex
   - 🔴 **Red**: FALSE statements
 - **Detailed Popovers**: Click highlighted text for AI summaries and credible sources
 - **Interactive Source Icons**: macOS dock-like hover effects for source navigation
-- **Loading Feedback**: Visual indicators during backend processing
+- **Clean Scanning Animation**: Bright blue scanning line sweeps vertically down the page during processing
 - **Glassmorphism UI**: Modern, beautiful interface with blur effects
 
 ## How It Works
 
 1. **Extension Icon Click**: User clicks the Newsfax icon in the browser toolbar
 2. **Background Communication**: Background script sends message to content script
-3. **Backend Simulation**: Content script makes simulated API call with 1.5s delay
-4. **Loading Indicator**: User sees loading spinner while "backend" processes the page
+3. **Backend Simulation**: Content script makes simulated API call with 2.2s delay
+4. **Scanning Animation**: Clean blue scanning line sweeps vertically down the page while processing
 5. **Text Analysis**: Script scans page for text matching fact-checking data
 6. **Highlighting**: Matching text is wrapped in color-coded spans
 7. **Interactive Popovers**: Click highlighted text for detailed information and sources
@@ -77,7 +77,7 @@ pnpm run dev
 ### 3. Test with Demo Page
 1. Open the `test.html` file in your browser
 2. **Click the Newsfax extension icon** in your browser toolbar
-3. Wait for the loading indicator (1.5 seconds)
+3. Watch the bright blue scanning line sweep down the page (2.2 seconds)
 4. You should see highlighted text in green, yellow, and red
 5. Click on any highlighted text to see the detailed popover
 6. Hover over source icons to see the macOS dock effect
@@ -86,7 +86,7 @@ pnpm run dev
 ### 4. Test on Real Websites
 1. Visit any news website (BBC, CNN, etc.)
 2. **Click the Newsfax extension icon** to start analysis
-3. Wait for the backend simulation to complete
+3. Watch the bright blue scanning line as the backend processes the content
 4. Look for highlighted terms from the fact-checking database
 
 ## File Structure

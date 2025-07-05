@@ -13,8 +13,8 @@ declare global {
 
 // Simulated backend API call
 const fetchFactCheckingData = async (): Promise<CheckedFact[]> => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+  // Simulate network delay (matches scanning animation duration)
+  await new Promise((resolve) => setTimeout(resolve, 2200));
 
   // Return dummy data (simulating backend response)
   return [
@@ -407,13 +407,10 @@ const FactChecker: React.FC = () => {
 
   return (
     <>
-      {/* Loading indicator */}
+      {/* Scanning ray animation */}
       {isLoading && (
-        <div className="newsfax-loading-indicator">
-          <div className="loading-spinner"></div>
-          <div className="loading-text">
-            Analyzing content for fact-checking...
-          </div>
+        <div className="newsfax-scanner-overlay">
+          <div className="scanner-ray"></div>
         </div>
       )}
 

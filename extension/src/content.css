@@ -171,53 +171,47 @@
   animation: popoverFadeOut 0.15s ease-in forwards;
 }
 
-/* Loading indicator styles */
-.newsfax-loading-indicator {
+/* Scanning ray animation styles */
+.newsfax-scanner-overlay {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  padding: 16px 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
   z-index: 999998;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  animation: slideInFromRight 0.3s ease-out;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-.loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #e5e7eb;
-  border-top: 2px solid #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.scanner-ray {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100vw;
+  height: 4px;
+  background: #3b82f6;
+  box-shadow: 
+    0 0 20px #3b82f6,
+    0 0 40px #3b82f6,
+    0 0 60px #3b82f6,
+    0 0 80px #3b82f6;
+  animation: scanDownPage 2s ease-in-out;
 }
 
-.loading-text {
-  font-size: 14px;
-  color: #374151;
-  font-weight: 500;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes slideInFromRight {
-  from {
+@keyframes scanDownPage {
+  0% {
+    top: -10px;
     opacity: 0;
-    transform: translateX(100%);
   }
-  to {
+  5% {
     opacity: 1;
-    transform: translateX(0);
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    top: 100vh;
+    opacity: 0;
   }
 } 
