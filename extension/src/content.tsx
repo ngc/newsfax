@@ -11,162 +11,104 @@ declare global {
   const chrome: any;
 }
 
-// Simulated backend API call
+// Real API call to backend with minimum loading time
 const fetchFactCheckingData = async (): Promise<CheckedFact[]> => {
-  // Simulate network delay (matches scanning animation duration)
-  await new Promise((resolve) => setTimeout(resolve, 2200));
+  const currentUrl = window.location.href;
+  const apiUrl = "http://localhost:8000/factcheck";
+  const minLoadingTime = 3000; // 3 seconds minimum loading time
 
-  // Return dummy data (simulating backend response)
-  return [
-    {
-      text: "climate change",
-      truthfulness: "TRUE",
-      summary:
-        "Climate change is a well-established scientific fact supported by overwhelming evidence from multiple independent research institutions worldwide.",
-      sources: [
-        {
-          url: "https://www.nasa.gov/climate",
-          favicon: "https://www.nasa.gov/favicon.ico",
+  // Start timing
+  const startTime = Date.now();
+
+  try {
+    // Make the API call
+    const apiCall = async (): Promise<CheckedFact[]> => {
+      // Make the initial request
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          url: "https://www.noaa.gov/climate",
-          favicon: "https://www.noaa.gov/favicon.ico",
-        },
-        {
-          url: "https://www.ipcc.ch/",
-          favicon: "https://www.ipcc.ch/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "artificial intelligence",
-      truthfulness: "SOMEWHAT TRUE",
-      summary:
-        "While AI technology is rapidly advancing, claims about its capabilities are often exaggerated or lack proper context about current limitations.",
-      sources: [
-        {
-          url: "https://www.nature.com/",
-          favicon: "https://www.nature.com/favicon.ico",
-        },
-        {
-          url: "https://www.sciencemag.org/",
-          favicon: "https://www.sciencemag.org/favicon.ico",
-        },
-        {
-          url: "https://www.technologyreview.com/",
-          favicon: "https://www.technologyreview.com/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "vaccines cause autism",
-      truthfulness: "FALSE",
-      summary:
-        "This claim has been thoroughly debunked by numerous large-scale studies. No credible scientific evidence supports any link between vaccines and autism.",
-      sources: [
-        {
-          url: "https://www.cdc.gov/",
-          favicon: "https://www.cdc.gov/favicon.ico",
-        },
-        {
-          url: "https://www.who.int/",
-          favicon: "https://www.who.int/favicon.ico",
-        },
-        {
-          url: "https://www.nejm.org/",
-          favicon: "https://www.nejm.org/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "renewable energy",
-      truthfulness: "TRUE",
-      summary:
-        "Renewable energy technologies are proven, cost-effective, and increasingly competitive with fossil fuels according to industry data.",
-      sources: [
-        {
-          url: "https://www.iea.org/",
-          favicon: "https://www.iea.org/favicon.ico",
-        },
-        {
-          url: "https://www.irena.org/",
-          favicon: "https://www.irena.org/favicon.ico",
-        },
-        {
-          url: "https://www.energy.gov/",
-          favicon: "https://www.energy.gov/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "unemployment rate",
-      truthfulness: "SOMEWHAT TRUE",
-      summary:
-        "Unemployment statistics are generally accurate but may not capture underemployment or discouraged workers, requiring careful interpretation.",
-      sources: [
-        {
-          url: "https://www.bls.gov/",
-          favicon: "https://www.bls.gov/favicon.ico",
-        },
-        {
-          url: "https://www.federalreserve.gov/",
-          favicon: "https://www.federalreserve.gov/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "inflation",
-      truthfulness: "SOMEWHAT TRUE",
-      summary:
-        "Inflation data is generally reliable but interpretation depends on methodology and time frame. Different measures may show varying trends.",
-      sources: [
-        {
-          url: "https://www.federalreserve.gov/",
-          favicon: "https://www.federalreserve.gov/favicon.ico",
-        },
-        {
-          url: "https://www.bls.gov/",
-          favicon: "https://www.bls.gov/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "social media",
-      truthfulness: "SOMEWHAT TRUE",
-      summary:
-        "Claims about social media impacts are often mixed - some effects are well-documented while others are still being researched.",
-      sources: [
-        {
-          url: "https://www.pewresearch.org/",
-          favicon: "https://www.pewresearch.org/favicon.ico",
-        },
-        {
-          url: "https://www.apa.org/",
-          favicon: "https://www.apa.org/favicon.ico",
-        },
-      ],
-    },
-    {
-      text: "electric vehicles",
-      truthfulness: "TRUE",
-      summary:
-        "Electric vehicles are a proven technology with clear environmental benefits and rapidly improving performance metrics.",
-      sources: [
-        {
-          url: "https://www.epa.gov/",
-          favicon: "https://www.epa.gov/favicon.ico",
-        },
-        {
-          url: "https://www.energy.gov/",
-          favicon: "https://www.energy.gov/favicon.ico",
-        },
-        {
-          url: "https://www.iea.org/",
-          favicon: "https://www.iea.org/favicon.ico",
-        },
-      ],
-    },
-  ];
+        body: JSON.stringify({ url: currentUrl }),
+      });
+
+      if (response.status === 200) {
+        // Fact checking is already complete
+        return await response.json();
+      } else if (response.status === 202) {
+        // Fact checking is starting/in progress, need to poll
+        console.log("Fact checking started, polling for completion...");
+
+        // Poll every 1 second until completion
+        return new Promise((resolve, reject) => {
+          const pollInterval = setInterval(async () => {
+            try {
+              const pollResponse = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ url: currentUrl }),
+              });
+
+              if (pollResponse.status === 200) {
+                clearInterval(pollInterval);
+                const facts = await pollResponse.json();
+                resolve(facts);
+              } else if (pollResponse.status === 202) {
+                // Still processing, continue polling
+                console.log("Still processing...");
+              } else {
+                clearInterval(pollInterval);
+                reject(new Error(`API error: ${pollResponse.status}`));
+              }
+            } catch (error) {
+              clearInterval(pollInterval);
+              reject(error);
+            }
+          }, 1000);
+
+          // Timeout after 30 seconds
+          setTimeout(() => {
+            clearInterval(pollInterval);
+            reject(new Error("Fact checking timeout"));
+          }, 30000);
+        });
+      } else {
+        throw new Error(`API error: ${response.status}`);
+      }
+    };
+
+    // Execute the API call
+    const facts = await apiCall();
+
+    // Calculate how much time has passed
+    const elapsedTime = Date.now() - startTime;
+    const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+    // If less than 3 seconds have passed, wait for the remaining time
+    if (remainingTime > 0) {
+      console.log(
+        `Waiting ${remainingTime}ms more for minimum loading time...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, remainingTime));
+    }
+
+    return facts;
+  } catch (error) {
+    console.error("Error fetching fact checking data:", error);
+
+    // Still enforce minimum loading time even on error
+    const elapsedTime = Date.now() - startTime;
+    const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+    if (remainingTime > 0) {
+      await new Promise((resolve) => setTimeout(resolve, remainingTime));
+    }
+
+    // Return empty array on error so the extension doesn't break
+    return [];
+  }
 };
 
 interface PopoverState {

@@ -16,3 +16,6 @@ __pycache__/
 *.pyd
 *.sqlite3
 *.db
+.pytest_cache/
+pytest.ini
+**/*.egg-info/*
