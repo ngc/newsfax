@@ -1,10 +1,11 @@
 from tavily import TavilyClient
 
-# make a call 
+
+# make a call
 # LLM to get list of facts
 # LLM queries Tavily
-# Tavily will return a list of 
-# use SQL Lite 
+# Tavily will return a list of
+# use SQL Lite
 # False, True, Somewhat True : With the sentence
 def main():
     print("Hello from api!")
@@ -17,7 +18,6 @@ def parse_content_from_url_news():
     response = tavily_client.crawl(url, instructions="Find news content")
     print(response)
 
-    
 
 if __name__ == "__main__":
     main()
