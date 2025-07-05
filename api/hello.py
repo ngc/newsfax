@@ -29,14 +29,12 @@ memory = MemorySaver()
 # Create factual quotes extraction tool
 @tool
 def extract_factual_quotes(content: str) -> str:
-    """Extract quotes that contain information stated as a fact from the content."""
-    
-    # Truncate if too long
+    """ Extract statements that are presented as factual verbatim"""
     if len(content) > 8000:
         content = content[:8000] + "... [truncated]"
     
     quote_extraction_prompt = f"""
-    Find all quotes in this article that contain factual information. Look for:
+    Extract statements that are presented as factual verbatim. Look for:
     - Quotes with certain statements
     - Statements that provide concrete information
     - Quotes that describe experiences, situations, or conditions, numbers, people
